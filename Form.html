@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>DOM</title>
+    <meta charset="utf-8" />
+    <style>
+        #modifiable p {
+            cursor: pointer;
+            padding: 5px;
+            border: 1px dashed #ccc;
+            margin: 5px 0;
+        }
+        #modifiable p:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+
+<form action="" name="myForm">
+    <fieldset>
+        <textarea id="zonetexte" rows="3" cols="30" placeholder="Saisissez votre texte ici..."></textarea><br>
+
+        <input type="radio" name="bouton" value="ajouter" id="rad_ajouter" /><label for="rad_ajouter">Ajouter</label>
+        <input type="radio" name="bouton" value="supprimer" id="rad_supprimer" /><label for="rad_supprimer">Supprimer</label>
+        <input type="radio" name="bouton" value="inserer" id="rad_inserer" /><label for="rad_inserer">Insérer avant</label>
+        <input type="radio" name="bouton" value="remplacer" id="rad_remplacer" /><label for="rad_remplacer">Remplacer</label>
+    </fieldset>
+</form>
+
+<div id="modifiable"></div>
+    <script>
+        //le bouton ajouter
+        const bt_rad=document.getElementsByName("bouton");
+        const div_modif=document.getElementById("modifiable");
+        const txtarea=document.getElementById("zonetexte");
+        const paragraphs=document.getElementsByTagName("p");
+        bt_rad[0].addEventListener("change",function(){
+            if (bt_rad[0].checked){
+                if(txtarea.value.trim()!==""){
+                    let paragraph=document.createElement("p");
+                    let texte=document.createTextNode(txtarea.value);
+                    paragraph.appendChild(texte);
+                    div_modif.appendChild(paragraph);
+                    txtarea.value="";
+                }else{
+                    alert("Ne pas creer de paragraphe vide!");
+                }
+                bt_rad[0].checked=false;
+            }
+        });
+        //le bouton supprimer
+        bt_rad[1].addEventListener("change",function(){
+            for (par of paragraphs){
+                par.addEventListener("click",supprimer);
+            }
+            function supprimer(){
+                if (bt_rad[1].checked){
+                    div_modif.removeChild(this);
+                    bt_rad[1].checked=false;
+                }  
+            }
+        })
+        // le bouton insere-avant
+        bt_rad[2].addEventListener("change",function(){
+            for (par of paragraphs){
+                par.addEventListener("click",inserer);
+            }
+            function inserer(){
+                if (bt_rad[2].checked){
+                    if (txtarea.value.trim()!==""){
+                        let paravant=document.createElement("p");
+                        let texte=document.createTextNode(txtarea.value);
+                        paravant.appendChild(texte);
+                        div_modif.insertBefore(paravant,this);
+                    }else{
+                        alert("Ne pas creer de paragraphe vide!");
+                    }
+                    bt_rad[2].checked=false;
+                }
+            }
+        })
+        // le bouton remplacer
+        bt_rad[3].addEventListener("change",function(){
+            for (par of paragraphs){
+                par.addEventListener("click",remplacer);
+            }
+            function remplacer(){
+                if (bt_rad[3].checked){
+                    if(txtarea.value.trim()!==""){
+                        this.firstChild.nodeValue=txtarea.value;
+                    }else{
+                        alert("Ne pas creer de paragraphe vide!");
+                    }
+                    bt_rad[3].checked=false;
+                }
+            }
+        })
+        
+    </script>
+</body>
+</html>
